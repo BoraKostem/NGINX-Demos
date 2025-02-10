@@ -5,7 +5,6 @@ pipeline {
         IMAGE_TAG = 'latest'
         DOCKER_CREDENTIALS = 'DOCKER_HUB_CREDENTIALS'
 
-        # Thresholds for Dive Analysis
         LOWEST_EFFICIENCY = 0.90
         HIGHEST_USER_WASTED_PERCENT = 0.2
         HIGHEST_WASTED_BYTES = 700000  # 5MB
