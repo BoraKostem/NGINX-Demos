@@ -33,4 +33,10 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            build job: 'Analyze_Docker_Image', wait: false
+        }
+    }
 }

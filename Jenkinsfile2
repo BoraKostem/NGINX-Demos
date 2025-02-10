@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_HUB_REPO = 'borakostem/nginx-hello'
+        IMAGE_TAG = 'latest'
+        DOCKER_CREDENTIALS = 'DOCKER_HUB_CREDENTIALS'
+
+        # Thresholds for Dive Analysis
+        LOWEST_EFFICIENCY = 0.90
+        HIGHEST_USER_WASTED_PERCENT = 0.2
+        HIGHEST_WASTED_BYTES = 700000  # 5MB
+    }
+    stages {
+        stage('Pull Docker Image') {
+            steps {
+                script {
+                    withDockerRegistry([credentialsId: env.DOCKER_CREDENTIALS, url: '']) {
+                        sh "docker pull $DOCKER_HUB_REPO:$IMAGE_TAG"
+                    }
+                }
+            }
+        }
+
+        stage('Analyze Image with Dive') {
+            steps {
+                script {
+                    def diveOutput = sh(script: """
+                        dive $DOCKER_HUB_REPO:$IMAGE_TAG --ci \
+                        --lowestEfficiency $LOWEST_EFFICIENCY \
+                        --highestUserWastedPercent $HIGHEST_USER_WASTED_PERCENT \
+                        --highestWastedBytes $HIGHEST_WASTED_BYTES
+                    """, returnStatus: true)
+
+                    if (diveOutput != 0) {
+                        error("Dive analysis failed: Image has inefficiencies exceeding allowed thresholds.")
+                    }
+                }
+            }
+        }
+    }
+}
