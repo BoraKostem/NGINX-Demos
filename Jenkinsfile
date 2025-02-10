@@ -9,7 +9,6 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 git credentialsId: env.GITHUB_CREDENTIALS, url: 'https://github.com/BoraKostem/NGINX-Demos.git', branch: 'master'
-                sh "ls -lart ./*" 
             }
         }
 
