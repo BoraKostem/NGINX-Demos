@@ -7,7 +7,7 @@ pipeline {
 
         LOWEST_EFFICIENCY = 0.90
         HIGHEST_USER_WASTED_PERCENT = 0.2
-        HIGHEST_WASTED_BYTES = 700000  # 5MB
+        HIGHEST_WASTED_BYTES = 700000
     }
     stages {
         stage('Pull Docker Image') {
